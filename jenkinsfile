@@ -2,12 +2,12 @@ pipeline {
     agent any
 
     tools {
-        nodejs 'NodeJS-24.7.0'  // <-- Use the exact name from Global Tool Configuration
+        nodejs 'nodejs-24.7.0'  // <-- Use the exact name from Global Tool Configuration
     }
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'feature/lab', url: 'https://github.com/Thanaphum-6510110194/SonarQube-Integration.git'
+                git branch: 'feature/lab', url: 'https://github.com/Thanaphum-6510110194/Docker-Jenkins-FastAPI.git'
             }
         }
 
@@ -19,8 +19,8 @@ pipeline {
 
         stage('SonarQube Scan') {
             steps {
-                withSonarQubeEnv('sonarqube-25.8.0.112029') {
-                    sh 'npx sonar-scanner -Dsonar.projectKey=SonarQube-Integration-with-Jenkins'
+                withSonarQubeEnv('sonarfastapi-7.2.0.5079') {
+                    sh 'npx sonar-scanner -Dsonar.projectKey=SonarQube-FastAPI'
                 }
             }
         }
