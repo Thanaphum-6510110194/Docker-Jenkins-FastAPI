@@ -19,7 +19,7 @@ pipeline {
 
         stage('SonarQube Scan') {
             steps {
-                withSonarQubeEnv('sonarfastapi-cli') {
+                withSonarQubeEnv('sonarqube-25.8.0.112029') {
                     sh 'npx sonar-scanner -Dsonar.projectKey=SonarQube-FastAPI'
                 }
             }
