@@ -24,7 +24,7 @@ pipeline {
                                                     mvn clean verify sonar:sonar \
                                                         -Dsonar.projectKey=SonarQube-FastAPI \
                                                         -Dsonar.projectName='SonarQube FastAPI' \
-                                                        -Dsonar.host.url=http://localhost:9001 \
+                                                        -Dsonar.host.url=http://host.docker.internal:9001/ \
                                                         -Dsonar.token=sqp_2f5ae1e98cf62022dc1a61e19389ea158bbaf0f2
                                             '''
                 }
