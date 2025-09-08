@@ -36,8 +36,11 @@ pipeline {
             steps {
                 withSonarQubeEnv('sonarqube-25.8.0.112029') {
                     sh '''
-                        . venv/bin/activate
-                        sonar-scanner
+                        pip install pysonar
+                        pysonar \
+                          --sonar-host-url=http://localhost:9001 \
+                          --sonar-token=$SONARQUBE_PSW \
+                          --sonar-project-key=SonarQube-FastAPI
                     '''
                 }
             }
