@@ -16,6 +16,17 @@ pipeline {
   git branch: 'main', url: 'https://github.com/Thanaphum-6510110194/Docker-Jenkins-FastAPI'
       }
     }
+    stage('SonarQube Python Scanner') {
+      steps {
+        sh '''
+          pip install pysonar
+          pysonar \
+            --sonar-host-url=http://localhost:9001 \
+            --sonar-token=sqp_80242a8631afa7334e21bd43c877f9df99e1cd39 \
+            --sonar-project-key=SonarQube-FastAPI
+        '''
+      }
+    }
 
     stage('Setup venv') {
       steps {
@@ -45,21 +56,13 @@ pipeline {
 
     stage('SonarQube Analysis') {
       steps {
-        withSonarQubeEnv('sonarqube-25.8.0.112029') {
-          // ใช้ SonarQube Scanner ที่กำหนดชื่อไว้
-          sh '''
-            docker run --rm \
-              -e SONAR_HOST_URL="$SONAR_HOST_URL" \
-              -e SONAR_LOGIN="$SONAR_AUTH_TOKEN" \
-              -v "$PWD:/usr/src" \
-              sonarsource/sonarfastapi-cli \
-              -Dsonar.projectKey=fastapi-clean-demo \
-              -Dsonar.projectName="FastAPI Clean Demo" \
-              -Dsonar.sources=app \
-              -Dsonar.tests=tests \
-              -Dsonar.python.coverage.reportPaths=coverage.xml
-          '''
-        }
+        sh '''
+          pip install pysonar
+          pysonar \
+            --sonar-host-url=http://localhost:9001 \
+            --sonar-token=sqp_80242a8631afa7334e21bd43c877f9df99e1cd39 \
+            --sonar-project-key=SonarQube-FastAPI
+        '''
       }
     }
 
