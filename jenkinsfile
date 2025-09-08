@@ -81,7 +81,7 @@ pipeline {
         sh '''
           set -eux
           export PYTHONPATH="$PWD"
-          pytest -q --cov=app --cov-report=xml tests/
+          pytest -q --cov=app --cov-report=xml test/
           ls -la
           test -f coverage.xml
           test -d app
@@ -105,7 +105,7 @@ pipeline {
                 -Dsonar.projectKey=SonarQube-FastAPI \
                 -Dsonar.projectName="SonarQube-FastAPI" \
                 -Dsonar.sources=app \
-                -Dsonar.tests=tests \
+                -Dsonar.tests=test \
                 -Dsonar.python.version=3.11 \
                 -Dsonar.python.coverage.reportPaths=coverage.xml \
                 -Dsonar.sourceEncoding=UTF-8
