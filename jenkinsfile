@@ -37,7 +37,9 @@ pipeline {
                 withSonarQubeEnv('sonarqube-25.8.0.112029') {
                     sh '''
                         export HOME=$PWD
-                        npm install -g sonar-scanner
+                        wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.8.1.3023-linux.zip
+                        unzip sonar-scanner-cli-4.8.1.3023-linux.zip
+                        export PATH=$PWD/sonar-scanner-4.8.1.3023-linux/bin:$PATH
                         sonar-scanner \
                           -Dsonar.host.url=http://host.docker.internal:9001 \
                           -Dsonar.login=$SONARQUBE \
