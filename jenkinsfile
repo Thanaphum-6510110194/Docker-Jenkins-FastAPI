@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'openjdk:17-slim'     // Slim Java 17 image that includes basic utilities
+            image 'python:3.11'     // Using Python image as base
             args '-v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
@@ -14,28 +14,20 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/Thanaphum-6510110194/Docker-Jenkins-FastAPI.git'
             }
         }
-        stage('Setup Python and venv') {
+        stage('Setup Environment') {
             steps {
                 sh '''#!/bin/bash
-                # Install sudo first
-                apt-get update && apt-get install -y sudo
+                # Update package lists and install Java 17
+                apt-get update
+                apt-get install -y wget unzip default-jdk
 
-                # Update package lists and install required packages
-                sudo apt-get update
-                sudo DEBIAN_FRONTEND=noninteractive apt-get install -y python3 python3-pip python3-venv wget unzip
-
-                # Create and set permissions for workspace directory
-                sudo mkdir -p /app
-                sudo chown -R $(id -u):$(id -g) /app
-                cd /app
-
-                # Setup Python environment
-                python3 -m venv venv
+                # Setup Python virtual environment
+                python -m venv venv
                 . venv/bin/activate
-
+                
                 # Install Python dependencies
-                python3 -m pip install --upgrade pip
-                python3 -m pip install -r requirements.txt
+                pip install --upgrade pip
+                pip install -r requirements.txt
                 '''
             }
         }
