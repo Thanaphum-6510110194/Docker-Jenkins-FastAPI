@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'python:3.11'     // Docker image ที่ต้องการใช้
+            image 'eclipse-temurin:17-jdk'     // Java 17 image with Python installed
             args '-v /var/run/docker.sock:/var/run/docker.sock'  // optional ถ้าต้องใช้ Docker CLI
         }
     }
