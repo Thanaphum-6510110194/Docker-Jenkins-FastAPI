@@ -14,9 +14,11 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/Thanaphum-6510110194/Docker-Jenkins-FastAPI.git'
             }
         }
-        stage('Setup venv') {
+        stage('Setup Python and venv') {
             steps {
                 sh '''
+                apt-get update
+                apt-get install -y python3 python3-pip python3-venv wget unzip
                 python3 -m venv venv
                 . venv/bin/activate
                 pip install --upgrade pip
