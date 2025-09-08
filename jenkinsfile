@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'eclipse-temurin:17-jdk'     // Java 17 image with Python installed
-            args '-v /var/run/docker.sock:/var/run/docker.sock'  // optional ถ้าต้องใช้ Docker CLI
+            args '-v /var/run/docker.sock:/var/run/docker.sock --privileged'  // added privileged flag
         }
     }
     environment {
@@ -16,9 +16,16 @@ pipeline {
         }
         stage('Setup Python and venv') {
             steps {
-                sh '''
+                sh '''#!/bin/bash
+                # Add write permission for apt lists directory
+                mkdir -p /var/lib/apt/lists/partial
+                chmod -R 777 /var/lib/apt/lists/partial
+                
+                # Update and install required packages
                 apt-get update
-                apt-get install -y python3 python3-pip python3-venv wget unzip
+                DEBIAN_FRONTEND=noninteractive apt-get install -y python3 python3-pip python3-venv wget unzip
+                
+                # Setup Python environment
                 python3 -m venv venv
                 . venv/bin/activate
                 pip install --upgrade pip
