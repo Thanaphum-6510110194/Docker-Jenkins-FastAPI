@@ -36,13 +36,12 @@ pipeline {
             steps {
                 withSonarQubeEnv('sonarqube-25.8.0.112029') {
                     sh '''
-                        . venv/bin/activate
-                        pip install pysonar
                         export HOME=$PWD
-                        venv/bin/pysonar \
-                          --sonar-host-url=http://host.docker.internal:9001 \
-                          --sonar-token=$SONARQUBE \
-                          --sonar-project-key=SonarQube-FastAPI \
+                        npm install -g sonar-scanner
+                        sonar-scanner \
+                          -Dsonar.host.url=http://host.docker.internal:9001 \
+                          -Dsonar.login=$SONARQUBE \
+                          -Dsonar.projectKey=SonarQube-FastAPI \
                           -Dsonar.sources=app \
                           -Dsonar.tests=test \
                           -Dsonar.python.coverage.reportPaths=coverage.xml
