@@ -42,7 +42,10 @@ pipeline {
                         venv/bin/pysonar \
                           --sonar-host-url=http://host.docker.internal:9001 \
                           --sonar-token=$SONARQUBE \
-                          --sonar-project-key=SonarQube-FastAPI
+                          --sonar-project-key=SonarQube-FastAPI \
+                          --sonar.sources=app \
+                          --sonar.tests=test \
+                          --sonar.python.coverage.reportPaths=coverage.xml
                     '''
                 }
             }
