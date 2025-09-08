@@ -38,10 +38,10 @@ pipeline {
                     sh '''
                         . venv/bin/activate
                         pip install pysonar
-                        venv/bin/pysonar \
-                          --sonar-host-url=http://localhost:9001 \
-                          --sonar-token=$SONARQUBE_PSW \
-                          --sonar-project-key=SonarQube-FastAPI
+                                                venv/bin/pysonar \
+                                                    --sonar-host-url=http://localhost:9001 \
+                                                    --sonar-token=$SONARQUBE \
+                                                    --sonar-project-key=SonarQube-FastAPI
                     '''
                 }
             }
