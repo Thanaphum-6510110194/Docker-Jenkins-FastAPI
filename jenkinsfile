@@ -1,99 +1,61 @@
 pipeline {
-  agent {
-    docker {
-      image 'python:3.11'
-      args '-v /var/run/docker.sock:/var/run/docker.sock'
+    agent {
+        docker {
+            image 'python:3.11'     // Docker image ที่ต้องการใช้
+            args '-v /var/run/docker.sock:/var/run/docker.sock'  // optional ถ้าต้องใช้ Docker CLI
+        }
     }
-  }
-  environment {
-  // Jenkins Credentials: โทเคน SonarQube เก็บไว้ชื่อ 'sonarqube-fastapi'
-  SONARQUBE = credentials('sonarqube-fastapi')
-  }
-  stages {
-    stage('Checkout') {
-      steps {
-  // ใช้ repo ที่ผู้ใช้ระบุ
-  git branch: 'main', url: 'https://github.com/Thanaphum-6510110194/Docker-Jenkins-FastAPI'
-      }
+    environment {
+        SONARQUBE = credentials('sonarqube-fastapi')
     }
-    stage('SonarQube Python Scanner') {
-      steps {
-        sh '''
-          pip install pysonar
-          pysonar \
-            --sonar-host-url=http://localhost:9001 \
-            --sonar-token=sqp_80242a8631afa7334e21bd43c877f9df99e1cd39 \
-            --sonar-project-key=SonarQube-FastAPI
-        '''
-      }
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/Thanaphum-6510110194/Docker-Jenkins-FastAPI.git'
+            }
+        }
+        stage('Setup venv') {
+            steps {
+                sh '''
+                python3 -m venv venv
+                . venv/bin/activate
+                pip install --upgrade pip
+                pip install -r requirements.txt
+                '''
+            }
+        }
+        
+        stage('Run Tests & Coverage') {
+            steps {
+                sh '''
+                venv/bin/pytest --maxfail=1 --disable-warnings -q --cov=app --cov-report=xml
+                '''
+            }
+        }
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('sonarqube-25.8.0.112029') {
+                    sh '''
+                        . venv/bin/activate
+                        sonar-scanner
+                    '''
+                }
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t fastapi-app:latest .'
+            }
+        }
+        stage('Deploy Container') {
+            steps {
+                sh 'docker run -d -p 8000:8000 fastapi-app:latest'
+            }
+        }
     }
-
-    stage('Setup venv') {
-      steps {
-        sh '''
-          python -m venv venv
-          . venv/bin/activate
-          pip install --upgrade pip
-          pip install -r requirements.txt
-        '''
-      }
-    }
-
-    stage('Run Tests & Coverage') {
-      steps {
-        sh '''
-          . venv/bin/activate
-          pytest --maxfail=1 --disable-warnings -q --cov=app --cov-report=xml
-        '''
-      }
-      post {
+    post {
         always {
-          // เก็บ coverage.xml ไว้ดูย้อนหลังได้
-          archiveArtifacts artifacts: 'coverage.xml', onlyIfSuccessful: true
+            echo "Pipeline finished"
         }
-      }
     }
-
-    stage('SonarQube Analysis') {
-      steps {
-        sh '''
-          pip install pysonar
-          pysonar \
-            --sonar-host-url=http://localhost:9001 \
-            --sonar-token=sqp_80242a8631afa7334e21bd43c877f9df99e1cd39 \
-            --sonar-project-key=SonarQube-FastAPI
-        '''
-      }
-    }
-
-    stage('Quality Gate') {
-      steps {
-        // ต้องตั้ง Webhook ใน SonarQube แล้วเท่านั้น (เลือกใส่ก็ได้)
-        timeout(time: 10, unit: 'MINUTES') {
-          waitForQualityGate abortPipeline: true
-        }
-      }
-    }
-
-    stage('Build Docker Image') {
-      steps {
-        sh 'docker build -t fastapi-app:latest .'
-      }
-    }
-
-    stage('Deploy Container') {
-      steps {
-        sh '''
-          docker rm -f fastapi-app || true
-          docker run -d --name fastapi-app -p 8000:8000 fastapi-app:latest
-        '''
-      }
-    }
-  }
-
-  post {
-    always {
-      echo "Pipeline finished"
-    }
-  }
 }
