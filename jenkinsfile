@@ -85,7 +85,7 @@ pipeline {
           ls -la
           test -f coverage.xml
           test -d app
-          test -d tests
+          test -d test
         '''
       }
     }
