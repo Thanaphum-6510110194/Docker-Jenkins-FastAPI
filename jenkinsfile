@@ -35,7 +35,7 @@ pipeline {
             sonar-scanner-cli-${SCAN_VER}-linux.zip
           "
 
-          rm -f /tmp/sonar.zip || true
+          rm -f /tmp/sonar.zip || true 
           for f in $CANDIDATES; do
             URL="${BASE_URL}/${f}"
             echo "Trying: $URL"
