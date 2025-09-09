@@ -60,7 +60,7 @@ pipeline {
 
     stage('Checkout') {
       steps {
-        git branch: 'feature', url: 'https://github.com/Thanaphum-6510110194/Docker-Jenkins-FastAPI'
+        git branch: 'main', url: 'https://github.com/Thanaphum-6510110194/Docker-Jenkins-FastAPI'
       }
     }
 
