@@ -7,7 +7,7 @@ client = TestClient(app)
 def test_root():
     resp = client.get("/")
     assert resp.status_code == 200
-    assert resp.json() == {"message": "Hello from 6510110194 with Jenkins & SonarQube!"}
+    assert resp.json() == {"message": "Hello from 6510110281 with Jenkins & SonarQube!"}
 
 def test_average_success():
     resp = client.get("/average?numbers=10&numbers=20&numbers=30")

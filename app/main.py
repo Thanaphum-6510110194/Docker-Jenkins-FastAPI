@@ -11,7 +11,7 @@ app = FastAPI(
 
 @app.get("/")
 def root():
-    return {"message": "Hello from 6510110194 with Jenkins & SonarQube!"}
+    return {"message": "Hello from 6510110281 with Jenkins & SonarQube!"}
 
 @app.get("/average")
 def get_average(numbers: List[float] = Query(..., description="List ของตัวเลข")):
